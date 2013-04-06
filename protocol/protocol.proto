@@ -1,0 +1,8 @@
+package spaceopera;
+
+message GetUniversesRequest {
+}
+
+message GetUniversesReply {
+	repeated string UniverseName = 1;
+}
