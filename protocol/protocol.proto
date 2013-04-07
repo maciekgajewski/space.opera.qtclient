@@ -1,8 +1,37 @@
 package spaceopera;
 
-message GetUniversesRequest {
+// all message types
+enum message_types {
+	mt_get_universes_request = 0;
+	mt_get_universes_reply = 1;
+	
+	mt_hello = 2;
+	mt_hello_reply = 3;
 }
 
-message GetUniversesReply {
-	repeated string UniverseName = 1;
+message header {
+	required sfixed32 message_len = 1;
+	required sfixed32 message_type = 2;
+	// this is breaking layer, I'm not proud. Always 0 for aync notification sent from server to client
+	required sfixed32 request_id = 3;
+	
+}
+
+// C-> S, clinet identification
+message hello {
+	required string user_name = 1;
+	optional string password = 2;
+}
+
+// S->, identification ok or error
+message hello_reply {
+	required bool ok = 1;
+	optional string message = 2;
+}
+
+message get_universes_request {
+}
+
+message get_universes_reply {
+	repeated string universe_name = 1;
 }

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core
+QT       += core network
 
 QT       -= gui
 
@@ -21,3 +21,4 @@ message("Assuming protobuf is in $$protobuf_root")
 
 INCLUDEPATH += $$protobuf_root/include
 LIBS += -L$$protobuf_root/lib -lprotobuf
+LIBS += -L../protocol_cpp -lprotocol_cpp
