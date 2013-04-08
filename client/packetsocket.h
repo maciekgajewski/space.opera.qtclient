@@ -8,6 +8,8 @@
 #include "../protocol_cpp/protocol.pb.h"
 
 #include <QAbstractSocket>
+#include <QHash>
+#include <QPair>
 
 namespace SpaceOpera {
 namespace Client {
@@ -21,32 +23,68 @@ public:
     PacketSocket(QAbstractSocket* socket, QObject* parent = nullptr);
 
     // sends requests, awaits reply of specific type/req id
-    template<typename RequestType, typename ReplyType, typename HandlerType /*call-deduced*/>
-    void SendReuest(const RequestType& request, const HandlerType& handler);
+    template<typename ReplyType, typename RequestType /*may be call-deduced*/, typename HandlerType /*call-deduced*/>
+    void sendReuest(const RequestType& request, const HandlerType& handler);
 
 private:
 
-    // decodre type
+    // type-erased decoder type
     struct BaseDecoder
     {
-        virtual OnMessage(const QByteArray& data) = 0;
+        virtual void onMessage(const QByteArray& data) = 0;
+        bool singleShot;
     };
+
+    // concrete decoder type
+    template <typename MessageType, typename HandlerType>
+    struct Decoder : public BaseDecoder
+    {
+        Decoder(const HandlerType& handler) : _handler(handler) { }
+
+        virtual void onMessage(const QByteArray& data)
+        {
+            MessageType msg;
+            if (!msg.ParseFromArray(data.data(), data.size())) {
+                qFatal("Error parsing message");
+            }
+            _handler(msg);
+        }
+
+    private:
+        HandlerType _handler;
+    };
+
+    // handler key
+    typedef QPair<int, int> HandlerKey; // msg type, req id
+
+    enum State {
+        stateReadingHeader,
+        stateReadingBody
+    };
+
+    QHash<HandlerKey, BaseDecoder*> _handlers;
 
     // send a message - fire and forget
     template<typename MessageType>
-    void Send(const MessageType& message, int reqId);
+    void send(const MessageType& message, int reqId);
 
     // register handler for msgtype/reqid combination
     template<typename MessageType, typename HandlerType /*call-deduced*/>
-    void RegisterHandler(int reqId, const HandlerType& handler);
+    void registerHandler(int reqId, const HandlerType& handler, bool singleShot);
 
+    void socketReadable();
+    void readHeader();
+    void readBody();
 
     QAbstractSocket* _socket;
+    int _lastReqId;
+    State _state;
+    spaceopera::header _header;
 };
 
 
 template<typename MessageType>
-void PacketSocket::Send(const MessageType& message, int reqId)
+void PacketSocket::send(const MessageType& message, int reqId)
 {
     spaceopera::header header;
 
@@ -64,7 +102,36 @@ void PacketSocket::Send(const MessageType& message, int reqId)
     message.SerializePartialToArray(static_cast<void*>(buffer.data()+headerSize), msgSize);
 
     // send
-    _socket->write(buffer);
+    int res = _socket->write(buffer);
+
+    if (res != buffer.size())
+    {
+        qFatal("wrting message failed");
+        // TODO handle it better
+    }
+}
+
+template<typename MessageType, typename HandlerType /*call-deduced*/>
+void PacketSocket::registerHandler(int reqId, const HandlerType& handler, bool singleShot)
+{
+    auto h = new Decoder<MessageType, HandlerType>(handler);
+    h->singleShot = singleShot;
+
+    HandlerKey key = qMakePair(GetMessageType<MessageType>(), reqId);
+
+    if (_handlers.contains(key)) {
+        qFatal("handler already registered");
+    }
+
+    _handlers.insert(key, h);
+}
+
+template<typename ReplyType, typename RequestType, typename HandlerType /*call-deduced*/>
+void PacketSocket::sendReuest(const RequestType& request, const HandlerType& handler)
+{
+    registerHandler<ReplyType>(_lastReqId, handler, true);
+    send(request, _lastReqId);
+    _lastReqId++;
 }
 
 

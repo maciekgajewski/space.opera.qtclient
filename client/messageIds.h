@@ -13,9 +13,11 @@ template<typename MessageType>
 int GetMessageType();
 
 template<>
+inline
 int GetMessageType<spaceopera::hello>() { return spaceopera::mt_hello; }
 
 template<>
+inline
 int GetMessageType<spaceopera::hello_reply>() { return spaceopera::mt_hello_reply; }
 
 }}

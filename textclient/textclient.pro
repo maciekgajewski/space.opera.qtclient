@@ -16,9 +16,13 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp
+QMAKE_CXXFLAGS += -std=c++11
 
 message("Assuming protobuf is in $$protobuf_root")
+
+TARGETDEPS += ../client/libclient.a
 
 INCLUDEPATH += $$protobuf_root/include
 LIBS += -L$$protobuf_root/lib -lprotobuf
 LIBS += -L../protocol_cpp -lprotocol_cpp
+LIBS += -L../client -lclient

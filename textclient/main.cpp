@@ -4,6 +4,7 @@
 #include <QDebug>
 
 #include "../protocol_cpp/protocol.pb.h"
+#include "../client/packetsocket.h"
 
 
 int main(int argc, char *argv[])
@@ -39,6 +40,8 @@ int main(int argc, char *argv[])
     spaceopera::hello hello;
 
     hello.set_user_name("player");
+
+    /*
     int helloSize = hello.ByteSize();
 
     header.set_message_len(helloSize);
@@ -56,6 +59,18 @@ int main(int argc, char *argv[])
     if (!socket.waitForBytesWritten(1000)) {
         qWarning() << "Error wrting data: " << socket.errorString();
     }
+    */
+    SpaceOpera::Client::PacketSocket packetSocket(&socket);
+
+    packetSocket.sendReuest<spaceopera::hello_reply>(
+        hello,
+        [](const spaceopera::hello_reply& reply) {
+            qDebug() << "hallo reply received: ok=" << reply.ok();
+            if (reply.has_message()){
+                qDebug() << "hallo reply msg: " << QString::fromStdString(reply.message());
+            }
+        });
+
 
 
     return a.exec();
