@@ -62,16 +62,26 @@ int main(int argc, char *argv[])
     */
     SpaceOpera::Client::PacketSocket packetSocket(&socket);
 
-    packetSocket.sendReuest<spaceopera::hello_reply>(
+    packetSocket.sendRequest<spaceopera::hello_reply>(
         hello,
-        [](const spaceopera::hello_reply& reply) {
+        [&](const spaceopera::hello_reply& reply) {
             qDebug() << "hallo reply received: ok=" << reply.ok();
             if (reply.has_message()){
                 qDebug() << "hallo reply msg: " << QString::fromStdString(reply.message());
             }
+
+            // list universes
+            qDebug() << "requesting universes";
+            packetSocket.sendRequest<spaceopera::get_universes_reply>(
+                spaceopera::get_universes(),
+                [](const spaceopera::get_universes_reply& reply) {
+                    qDebug() << "universes received: ";
+                    for(const std::string& universeName : reply.universe_name()) {
+                        qDebug() << " * " << QString::fromStdString(universeName);
+                    }
+                }
+            );
         });
-
-
 
     return a.exec();
 }

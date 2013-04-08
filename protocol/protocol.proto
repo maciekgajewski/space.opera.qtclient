@@ -2,13 +2,19 @@ package spaceopera;
 
 // all message types
 enum message_types {
-	mt_get_universes_request = 0;
-	mt_get_universes_reply = 1;
 	
-	mt_hello = 2;
-	mt_hello_reply = 3;
+	// auth step
+	
+	mt_hello = 0;
+	mt_hello_reply = 1;
+
+	// universe management step
+	
+	mt_get_universes = 10;
+	mt_get_universes_reply = 11;
 }
 
+// header - fixed size (5 bytes for each , sent before each message
 message header {
 	required sfixed32 message_len = 1;
 	required sfixed32 message_type = 2;
@@ -16,6 +22,9 @@ message header {
 	required sfixed32 request_id = 3;
 	
 }
+
+//////////////////////////////
+// authentication step
 
 // C-> S, clinet identification
 message hello {
@@ -29,7 +38,11 @@ message hello_reply {
 	optional string message = 2;
 }
 
-message get_universes_request {
+///////////////////////////////
+// universe management step
+
+// C -> s, request list of all universes
+message get_universes {
 }
 
 message get_universes_reply {

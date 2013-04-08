@@ -24,7 +24,7 @@ public:
 
     // sends requests, awaits reply of specific type/req id
     template<typename ReplyType, typename RequestType /*may be call-deduced*/, typename HandlerType /*call-deduced*/>
-    void sendReuest(const RequestType& request, const HandlerType& handler);
+    void sendRequest(const RequestType& request, const HandlerType& handler);
 
 private:
 
@@ -127,7 +127,7 @@ void PacketSocket::registerHandler(int reqId, const HandlerType& handler, bool s
 }
 
 template<typename ReplyType, typename RequestType, typename HandlerType /*call-deduced*/>
-void PacketSocket::sendReuest(const RequestType& request, const HandlerType& handler)
+void PacketSocket::sendRequest(const RequestType& request, const HandlerType& handler)
 {
     registerHandler<ReplyType>(_lastReqId, handler, true);
     send(request, _lastReqId);
