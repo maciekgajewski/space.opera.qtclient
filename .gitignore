@@ -1,4 +1,7 @@
+CMakeLists.txt.*
 *.pro.user*
 *.pb.cc
 *.pb.h
 
+
+protocol_cpp
