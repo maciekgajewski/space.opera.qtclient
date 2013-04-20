@@ -10,7 +10,7 @@ add_executable(uiclient
 qt5_use_modules(uiclient Network Declarative Quick)
 
 target_link_libraries(uiclient
-	client
+        libclient
 	protocol_cpp
 
 	protobuf

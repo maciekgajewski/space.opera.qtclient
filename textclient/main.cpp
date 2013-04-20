@@ -4,7 +4,7 @@
 #include <QDebug>
 
 #include "../protocol_cpp/protocol.pb.h"
-#include "../client/packetsocket.h"
+#include "../libclient/packetsocket.h"
 
 
 int main(int argc, char *argv[])

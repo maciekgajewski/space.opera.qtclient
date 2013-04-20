@@ -5,7 +5,7 @@ add_executable(textclient
 qt5_use_modules(textclient Network)
 
 target_link_libraries(textclient
-	client
+        libclient
 	protocol_cpp
 
 	protobuf

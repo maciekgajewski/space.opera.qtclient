@@ -12,19 +12,21 @@ namespace Client {
 
 Client::Client(QObject* parent)
     : QObject(parent),
-      _tcpSocket(nullptr), _packetSocket(nullptr)
+      _tcpSocket(nullptr), _packetSocket(nullptr), _connected(false)
 {
     _tcpSocket = new QTcpSocket(this);
     _packetSocket = new PacketSocket(_tcpSocket, this);
 
     connect(_tcpSocket, &QTcpSocket::connected, this, &Client::networkConnected);
-    connect(_tcpSocket, (void (QTcpSocket::*)(QAbstractSocket::SocketError))&QTcpSocket::error, this, &Client::networkError);
+    connect(_tcpSocket, static_cast<void (QAbstractSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error), this, &Client::networkError);
 
 }
 
 void Client::connectToHost(const QString& hostName, quint16 port)
 {
-        _tcpSocket->connectToHost(hostName, port);
+    qDebug() << "Client::connectToHost " << hostName << port;
+
+    _tcpSocket->connectToHost(hostName, port);
 }
 
 void Client::disconnect()
@@ -34,17 +36,28 @@ void Client::disconnect()
 
 bool Client::isConnected() const
 {
-    return _tcpSocket->state() == QAbstractSocket::ConnectedState;
+    return _connected;
 }
 
 void Client::networkConnected()
 {
-    emit connectionStateChanged();
+    qDebug() << "Client::networkConnected";
+
+    if (!_connected) {
+        _connected = true;
+        emit connectionStateChanged();
+    }
 }
 
 void Client::networkError(QAbstractSocket::SocketError socketError)
 {
-    emit connectionStateChanged();
+    qDebug() << "Client::networkError" << socketError;
+
+    if (_connected) {
+        _connected = false;
+        emit connectionStateChanged();
+    }
+    emit connectionError(_tcpSocket->errorString());
 }
 
 

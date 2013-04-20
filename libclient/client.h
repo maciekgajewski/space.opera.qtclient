@@ -26,6 +26,7 @@ public:
 signals:
 
     void connectionStateChanged();
+    void connectionError(const QString& errorString);
 
 public slots:
 
@@ -44,6 +45,7 @@ private:
 
     QTcpSocket* _tcpSocket;
     PacketSocket* _packetSocket;
+    bool _connected;
 };
 
 

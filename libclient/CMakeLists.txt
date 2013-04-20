@@ -1,8 +1,8 @@
-add_library(client STATIC
+add_library(libclient STATIC
 	client.cpp client.h
 	packetsocket.cpp packetsocket.h
 )
 
-qt5_use_modules(client
+qt5_use_modules(libclient
 	Network
 )
