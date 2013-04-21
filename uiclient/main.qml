@@ -1,9 +1,10 @@
+// Copyright (c) 2013 Maciej Gajewski
 import QtQuick 2.0
 import spaceopera.client 1.0
 
 Rectangle {
-    width: 200
-    height: 200
+    width: 800
+    height: 600
     color: "lightsteelblue"
 
     // client
@@ -12,40 +13,36 @@ Rectangle {
         onConnectionError: errortext.errorMsg = errorString
     }
 
-    // conection status text
-    Text {
-        id: connectionstatus
+    Column {
+        width: 150
         anchors.top: parent.top
-        text: client.connected ? "connected" : "disconnected"
-    }
-
-    // error status
-    Text {
-        id: errortext
-        anchors.top: connectionstatus.bottom
-
-        property string errorMsg
-
-        text: client.connected ? "---" : errorMsg
-    }
-
-    // connect button
-    Rectangle {
+        anchors.left: parent.left
         anchors.bottom: parent.bottom
-        color: "wheat"
-        height: 20
-        width: 100
 
-        MouseArea {
-            anchors.fill: parent
-            Text {
-                id: buttontext
-                anchors.fill: parent
-                text: "click me to connect"
-            }
+        // conection status text
+        Text {
+            id: connectionstatus
+            //anchors.top: parent.top
+            text: client.connected ? "connected" : "disconnected"
+        }
 
+        // error status
+        Text {
+            id: errortext
+            //anchors.top: connectionstatus.bottom
+
+            property string errorMsg
+
+            text: client.connected ? "---" : errorMsg
+        }
+
+        // connect button
+
+        TextButton {
+            //anchors.bottom: parent.bottom
+            width: 100
+            text: "Connect"
             onClicked: { client.connectToHost("localhost", 7898); errortext.errorMsg = "connecting..." }
-
         }
     }
 

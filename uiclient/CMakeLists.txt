@@ -5,6 +5,8 @@ qt5_add_Resources(RESOURCES
 add_executable(uiclient
         ${RESOURCES}
 	main.cpp
+
+        main.qml
 )
 
 qt5_use_modules(uiclient Network Declarative Quick)

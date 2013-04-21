@@ -25,8 +25,9 @@ Client::Client(QObject* parent)
 void Client::connectToHost(const QString& hostName, quint16 port)
 {
     qDebug() << "Client::connectToHost " << hostName << port;
-
-    _tcpSocket->connectToHost(hostName, port);
+    if (!_connected) {
+        _tcpSocket->connectToHost(hostName, port);
+    }
 }
 
 void Client::disconnect()

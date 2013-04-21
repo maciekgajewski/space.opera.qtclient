@@ -1,3 +1,4 @@
+// Copyright (c) 2013 Maciej Gajewski
 #include "../libclient/client.h"
 
 #include <QFile>
