@@ -11,6 +11,16 @@ Rectangle {
     Client {
         id: client
         onConnectionError: errortext.errorMsg = errorString
+        onConnected: session.authenticate('user', 'password')
+    }
+
+    Session {
+        id: session
+        client: client
+
+        onSessionError: errortext.errorMsg = errorString
+        onAuthenticated: { errortext.errorMsg = 'authetticated'; requestUniverses() }
+        onUniversesReceived: { errortext.errorMsg = 'universes received'; console.log('universes received'); }
     }
 
     Column {

@@ -26,6 +26,9 @@ public:
 signals:
 
     void connectionStateChanged();
+    void connected();
+    void disconnected();
+
     void connectionError(const QString& errorString);
 
 public slots:
@@ -38,9 +41,14 @@ public: // state querying
 
     bool isConnected() const;
 
+public: // used by sessions
+
+    PacketSocket& packetSocket() const { Q_ASSERT(_packetSocket); return *_packetSocket; }
+
 private:
 
     void networkConnected();
+    void networkDisconnected();
     void networkError(QAbstractSocket::SocketError socketError);
 
     QTcpSocket* _tcpSocket;
