@@ -13,8 +13,10 @@
 namespace SpaceOpera {
 namespace Client {
 
+DEFINE_SEND_REQUEST(HandshakeSession)
+
 HandshakeSession::HandshakeSession(QObject *parent) :
-    QObject(parent), _client(nullptr)
+    BaseSession(parent)
 {
 }
 
@@ -32,23 +34,11 @@ void HandshakeSession::authenticate(const QString& username, const QString& pass
 void HandshakeSession::requestUniverses()
 {
     qDebug("Session::requestUniverses");
-    Q_ASSERT(_client);
 
     spaceopera::get_universes req;
     sendRequest(req, &HandshakeSession::onUniverses);
 }
 
-PacketSocket& HandshakeSession::packetSocket() const
-{
-    Q_ASSERT(_client);
-    return _client->packetSocket();
-}
-
-template<typename ReplyType, typename RequestType>
-void HandshakeSession::sendRequest(const RequestType& req, void (HandshakeSession::*reqHandler)(const ReplyType&) )
-{
-    packetSocket().sendRequest<ReplyType>(req, [=](const ReplyType& rep) { (this->*reqHandler)(rep); });
-}
 
 void HandshakeSession::onHelloReply(const spaceopera::hello_reply& reply)
 {

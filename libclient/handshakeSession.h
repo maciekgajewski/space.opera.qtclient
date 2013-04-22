@@ -1,11 +1,13 @@
 // Copyright (c) 2013 Maciej Gajewski
 
-#ifndef SPACEOPERA_CLIENT_SESSION_H
-#define SPACEOPERA_CLIENT_SESSION_H
+#ifndef SPACEOPERA_CLIENT_HANDSHAKE_SESSION_H
+#define SPACEOPERA_CLIENT_HANDSHAKE_SESSION_H
 
 #include "client.h"
 
-#include <QObject>
+#include"baseSession.h"
+
+#include <functional>
 
 namespace spaceopera {
 class hello_reply;
@@ -15,9 +17,7 @@ class get_universes_reply;
 namespace SpaceOpera {
 namespace Client {
 
-class PacketSocket;
-
-class HandshakeSession : public QObject
+class HandshakeSession : public BaseSession
 {
     Q_OBJECT
 
@@ -37,28 +37,18 @@ public slots:
     void authenticate(const QString& username, const QString& password);
     void requestUniverses();
 
-public:
-
-    void setClient(Client* c) { _client = c; }
-    Client* client() const { return _client; }
-
 private:
 
-    template<typename ReplyType, typename RequestType>
-    void sendRequest(const RequestType& req, void (HandshakeSession::*reqHandler)(const ReplyType&) );
-
-    PacketSocket& packetSocket() const;
+    DECLARE_SEND_REQUEST(HandshakeSession);
 
 private: // reply handlers
 
     void onHelloReply(const spaceopera::hello_reply& reply);
     void onUniverses(const spaceopera::get_universes_reply& rep);
-
-    Client* _client;
     
 };
 
 } // namespace Client
 } // namespace SpaceOpera
 
-#endif // SPACEOPERA_CLIENT_SESSION_H
+#endif
