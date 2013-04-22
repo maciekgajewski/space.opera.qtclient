@@ -1,6 +1,6 @@
 // Copyright (c) 2013 Maciej Gajewski
 
-#include "session.h"
+#include "handshakeSession.h"
 
 #include "packetsocket.h"
 #include "client.h"
@@ -13,12 +13,12 @@
 namespace SpaceOpera {
 namespace Client {
 
-Session::Session(QObject *parent) :
+HandshakeSession::HandshakeSession(QObject *parent) :
     QObject(parent), _client(nullptr)
 {
 }
 
-void Session::authenticate(const QString& username, const QString& password)
+void HandshakeSession::authenticate(const QString& username, const QString& password)
 {
     qDebug("Session::authenticate");
 
@@ -26,31 +26,31 @@ void Session::authenticate(const QString& username, const QString& password)
     hello.set_user_name(username.toLocal8Bit());
     hello.set_password(password.toLocal8Bit());
 
-    sendRequest(hello, &Session::onHelloReply);
+    sendRequest(hello, &HandshakeSession::onHelloReply);
 }
 
-void Session::requestUniverses()
+void HandshakeSession::requestUniverses()
 {
     qDebug("Session::requestUniverses");
     Q_ASSERT(_client);
 
     spaceopera::get_universes req;
-    sendRequest(req, &Session::onUniverses);
+    sendRequest(req, &HandshakeSession::onUniverses);
 }
 
-PacketSocket& Session::packetSocket() const
+PacketSocket& HandshakeSession::packetSocket() const
 {
     Q_ASSERT(_client);
     return _client->packetSocket();
 }
 
 template<typename ReplyType, typename RequestType>
-void Session::sendRequest(const RequestType& req, void (Session::*reqHandler)(const ReplyType&) )
+void HandshakeSession::sendRequest(const RequestType& req, void (HandshakeSession::*reqHandler)(const ReplyType&) )
 {
     packetSocket().sendRequest<ReplyType>(req, [=](const ReplyType& rep) { (this->*reqHandler)(rep); });
 }
 
-void Session::onHelloReply(const spaceopera::hello_reply& reply)
+void HandshakeSession::onHelloReply(const spaceopera::hello_reply& reply)
 {
     if (reply.ok()) {
         qDebug("Session::onHelloReply: ok");
@@ -64,7 +64,7 @@ void Session::onHelloReply(const spaceopera::hello_reply& reply)
     }
 }
 
-void Session::onUniverses(const spaceopera::get_universes_reply& rep)
+void HandshakeSession::onUniverses(const spaceopera::get_universes_reply& rep)
 {
     qDebug("Session::onUniverses");
     QStringList universes;

@@ -14,7 +14,7 @@ Rectangle {
         onConnected: session.authenticate('user', 'password')
     }
 
-    Session {
+    HandshakeSession {
         id: session
         client: client
 

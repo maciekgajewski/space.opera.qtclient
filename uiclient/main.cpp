@@ -1,7 +1,7 @@
 // Copyright (c) 2013 Maciej Gajewski
 
 #include "../libclient/client.h"
-#include "../libclient/session.h"
+#include "../libclient/handshakeSession.h"
 
 #include <QFile>
 #include <QtQuick/QQuickView>
@@ -12,7 +12,7 @@
 int main(int argc, char *argv[])
 {
     qmlRegisterType<SpaceOpera::Client::Client>("spaceopera.client", 1, 0, "Client");
-    qmlRegisterType<SpaceOpera::Client::Session>("spaceopera.client", 1, 0, "Session");
+    qmlRegisterType<SpaceOpera::Client::HandshakeSession>("spaceopera.client", 1, 0, "HandshakeSession");
 
     QGuiApplication app(argc, argv);
 

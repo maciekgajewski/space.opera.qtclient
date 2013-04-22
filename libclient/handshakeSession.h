@@ -17,14 +17,14 @@ namespace Client {
 
 class PacketSocket;
 
-class Session : public QObject
+class HandshakeSession : public QObject
 {
     Q_OBJECT
 
     Q_PROPERTY(SpaceOpera::Client::Client* client READ client WRITE setClient)
 
 public:
-    explicit Session(QObject *parent = 0);
+    explicit HandshakeSession(QObject *parent = 0);
     
 signals:
     
@@ -45,7 +45,7 @@ public:
 private:
 
     template<typename ReplyType, typename RequestType>
-    void sendRequest(const RequestType& req, void (Session::*reqHandler)(const ReplyType&) );
+    void sendRequest(const RequestType& req, void (HandshakeSession::*reqHandler)(const ReplyType&) );
 
     PacketSocket& packetSocket() const;
 
