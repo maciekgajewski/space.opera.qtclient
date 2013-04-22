@@ -12,6 +12,14 @@ enum message_types {
 	
 	mt_get_universes = 10;
 	mt_get_universes_reply = 11;
+	mt_connect_to_universe = 12;
+	mt_connect_to_universe_reply = 13;
+	
+	// universe
+	
+	mt_universe_state_feed = 20;
+	mt_universe_control = 21;
+	mt_universe_control_reply = 22;
 }
 
 // header - fixed size (5 bytes for each , sent before each message
@@ -47,4 +55,30 @@ message get_universes {
 
 message get_universes_reply {
 	repeated string universe_name = 1;
+}
+
+message connect_to_universe {
+	required string universe_name = 1;
+}
+
+message connect_to_universe_reply {
+	required bool ok = 1;
+	optional string message = 2;
+}
+
+////////////////////////////////
+// universe session
+
+message universe_state_feed {
+	required double current_time = 1;
+	required double time_scale = 2;
+}
+
+message universe_control {
+	optional double new_time_scale = 1;
+}
+
+message universe_control_reply {
+	required bool ok = 1;
+	optional string message = 2;
 }
