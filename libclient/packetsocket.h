@@ -123,6 +123,8 @@ void PacketSocket::registerHandler(int reqId, const HandlerType& handler, bool s
         qFatal("handler already registered");
     }
 
+    //qDebug() << "Registered handler: msg type: "<< key.first << "req id: " << key.second;
+
     _handlers.insert(key, h);
 }
 

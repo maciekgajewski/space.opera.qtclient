@@ -45,7 +45,7 @@ void HandshakeSession::connectToUniverse(const QString& universeName)
 
     spaceopera::connect_to_universe req;
     req.set_universe_name(universeName.toStdString());
-    sendRequest(req, &HandshakeSession::onUniverses);
+    sendRequest(req, &HandshakeSession::onConenctToUniverseReply);
 }
 
 
@@ -77,7 +77,7 @@ void HandshakeSession::onUniverses(const spaceopera::get_universes_reply& rep)
 void HandshakeSession::onConenctToUniverseReply(const spaceopera::connect_to_universe_reply& reply)
 {
     if (reply.ok()) {
-        qDebug("HandshakeSession::obnConenctToUniverseReply: ok");
+        qDebug("HandshakeSession::onConenctToUniverseReply: ok");
         emit connectedToUniverse();
     } else {
         QString err(QStringLiteral("Unknwon error"));

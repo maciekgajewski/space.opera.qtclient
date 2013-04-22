@@ -61,7 +61,9 @@ void PacketSocket::readBody()
         qFatal("unable to read packet");
     }
 
-    // ok, message readed,try dispatching it
+    //qDebug() << "Received message, type id: " << _header.message_type() << "req id: " << _header.request_id();
+
+    // ok, message readed, try dispatching it
     HandlerKey key = qMakePair(_header.message_type(), _header.request_id());
     auto i = _handlers.find(key);
     if (i != _handlers.end()) {
@@ -70,6 +72,8 @@ void PacketSocket::readBody()
         if (dec->singleShot) {
             _handlers.erase(i);
         }
+    } else {
+        qDebug() << "Unhandled message, type id: " << _header.message_type() << "req id: " << _header.request_id();
     }
 
     _state = stateReadingHeader;
