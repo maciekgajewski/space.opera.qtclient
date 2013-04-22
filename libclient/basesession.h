@@ -20,7 +20,11 @@ class BaseSession : public QObject
 
 public:
     explicit BaseSession(QObject *parent = 0);
-    
+
+signals:
+
+    void sessionError(const QString& errorText);
+
 public:
 
     void setClient(Client* c) { _client = c; }

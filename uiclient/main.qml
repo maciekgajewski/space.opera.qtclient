@@ -11,16 +11,24 @@ Rectangle {
     Client {
         id: client
         onConnectionError: errortext.errorMsg = errorString
-        onConnected: session.authenticate('user', 'password')
+        onConnected: handshakeSession.authenticate('user', 'password')
     }
 
     HandshakeSession {
-        id: session
+        id: handshakeSession
         client: client
 
         onSessionError: errortext.errorMsg = errorString
         onAuthenticated: { errortext.errorMsg = 'authetticated'; requestUniverses() }
-        onUniversesReceived: { errortext.errorMsg = 'universes received'; console.log('universes received'); }
+        onUniversesReceived: { connectToUniverse("default"); console.log('universes received'); }
+        onConnectedToUniverse:errortext.errorMsg = 'connected to universe'
+    }
+
+    UniverseSession {
+        id: universeSession
+        client: client
+
+        onSessionError: errortext.errorMsg = errorString
     }
 
     Column {

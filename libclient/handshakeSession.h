@@ -12,6 +12,7 @@
 namespace spaceopera {
 class hello_reply;
 class get_universes_reply;
+class connect_to_universe_reply;
 }
 
 namespace SpaceOpera {
@@ -29,13 +30,14 @@ public:
 signals:
     
     void authenticated();
-    void sessionError(const QString& errorText);
     void universesReceived(const QStringList& univereses);
+    void connectedToUniverse();
 
 public slots:
 
     void authenticate(const QString& username, const QString& password);
     void requestUniverses();
+    void connectToUniverse(const QString& universeName);
 
 private:
 
@@ -45,6 +47,7 @@ private: // reply handlers
 
     void onHelloReply(const spaceopera::hello_reply& reply);
     void onUniverses(const spaceopera::get_universes_reply& rep);
+    void onConenctToUniverseReply(const spaceopera::connect_to_universe_reply& rep);
     
 };
 

@@ -22,7 +22,7 @@ HandshakeSession::HandshakeSession(QObject *parent) :
 
 void HandshakeSession::authenticate(const QString& username, const QString& password)
 {
-    qDebug("Session::authenticate");
+    qDebug("HandshakeSession::authenticate");
 
     spaceopera::hello hello;
     hello.set_user_name(username.toLocal8Bit());
@@ -33,9 +33,18 @@ void HandshakeSession::authenticate(const QString& username, const QString& pass
 
 void HandshakeSession::requestUniverses()
 {
-    qDebug("Session::requestUniverses");
+    qDebug("HandshakeSession::requestUniverses");
 
     spaceopera::get_universes req;
+    sendRequest(req, &HandshakeSession::onUniverses);
+}
+
+void HandshakeSession::connectToUniverse(const QString& universeName)
+{
+    qDebug() << "HandshakeSession::connectToUniverse" << universeName;
+
+    spaceopera::connect_to_universe req;
+    req.set_universe_name(universeName.toStdString());
     sendRequest(req, &HandshakeSession::onUniverses);
 }
 
@@ -43,7 +52,7 @@ void HandshakeSession::requestUniverses()
 void HandshakeSession::onHelloReply(const spaceopera::hello_reply& reply)
 {
     if (reply.ok()) {
-        qDebug("Session::onHelloReply: ok");
+        qDebug("HandshakeSession::onHelloReply: ok");
         emit authenticated();
     } else {
         QString err(QStringLiteral("Unknwon error"));
@@ -56,13 +65,27 @@ void HandshakeSession::onHelloReply(const spaceopera::hello_reply& reply)
 
 void HandshakeSession::onUniverses(const spaceopera::get_universes_reply& rep)
 {
-    qDebug("Session::onUniverses");
+    qDebug("HandshakeSession::onUniverses");
     QStringList universes;
     for(const std::string& u : rep.universe_name()) {
         universes.push_back(QString::fromStdString(u));
     }
 
     emit universesReceived(universes);
+}
+
+void HandshakeSession::onConenctToUniverseReply(const spaceopera::connect_to_universe_reply& reply)
+{
+    if (reply.ok()) {
+        qDebug("HandshakeSession::obnConenctToUniverseReply: ok");
+        emit connectedToUniverse();
+    } else {
+        QString err(QStringLiteral("Unknwon error"));
+        if (reply.has_message()) {
+            err = QString::fromStdString(reply.message());
+        }
+        emit sessionError(err);
+    }
 }
 
 } // namespace Client

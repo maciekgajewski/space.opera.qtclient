@@ -4,6 +4,8 @@ add_library(libclient STATIC
     packetsocket.cpp packetsocket.h
     handshakeSession.cpp handshakeSession.h
     universeSession.cpp universeSession.h
+
+    messageIds.h
 )
 
 qt5_use_modules(libclient
