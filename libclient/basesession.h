@@ -27,12 +27,14 @@ signals:
 
 public:
 
-    void setClient(Client* c) { _client = c; }
+    void setClient(Client* c) { _client = c; onClientSet(); }
     Client* client() const { return _client; }
 
 protected:
 
     PacketSocket& packetSocket() const;
+
+    virtual void onClientSet() {}
 
 private:
 
@@ -42,13 +44,22 @@ private:
 
 #define DECLARE_SEND_REQUEST(ClassName) \
     template<typename ReplyType, typename RequestType> \
-    void sendRequest(const RequestType& req, void (ClassName::*reqHandler)(const ReplyType&) )
+    void sendRequest(const RequestType& req, void (ClassName::*reqHandler)(const ReplyType&) );\
+    template<typename FeedType> \
+    void subscribeFeed(void (ClassName::*feedHandler)(const FeedType&) )
+
+
 
 #define DEFINE_SEND_REQUEST(ClassName) \
     template<typename ReplyType, typename RequestType>\
     void ClassName::sendRequest(const RequestType& req, void (ClassName::*reqHandler)(const ReplyType&) )\
     {\
         packetSocket().sendRequest<ReplyType>(req, [=](const ReplyType& rep) { (this->*reqHandler)(rep); });\
+    }\
+    template<typename FeedType> \
+    void ClassName::subscribeFeed(void (ClassName::*feedHandler)(const FeedType&) ) \
+    {\
+        packetSocket().subscribeFeed<FeedType>([=](const FeedType& feed) { (this->*feedHandler)(feed); });\
     }
 
 

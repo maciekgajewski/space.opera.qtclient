@@ -26,6 +26,9 @@ public:
     template<typename ReplyType, typename RequestType /*may be call-deduced*/, typename HandlerType /*call-deduced*/>
     void sendRequest(const RequestType& request, const HandlerType& handler);
 
+    template<typename FeedType, typename HandlerType /*call-deduced*/>
+    void subscribeFeed(const HandlerType& handler);
+
 private:
 
     // type-erased decoder type
@@ -134,6 +137,12 @@ void PacketSocket::sendRequest(const RequestType& request, const HandlerType& ha
     registerHandler<ReplyType>(_lastReqId, handler, true);
     send(request, _lastReqId);
     _lastReqId++;
+}
+
+template<typename FeedType, typename HandlerType /*call-deduced*/>
+void PacketSocket::subscribeFeed(const HandlerType& handler)
+{
+    registerHandler<FeedType>(0, handler ,false);
 }
 
 

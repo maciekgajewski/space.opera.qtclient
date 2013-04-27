@@ -5,6 +5,11 @@
 
 #include "baseSession.h"
 
+namespace spaceopera {
+    class universe_state_feed;
+    class universe_control_reply;
+}
+
 namespace SpaceOpera {
 namespace Client {
 
@@ -21,8 +26,16 @@ signals:
 public slots:
     void changeTimeScale(double newTimeScale);
 
-private:
+private: // state management
+    virtual void onClientSet() override;
+
+private: // comm handling
     DECLARE_SEND_REQUEST(UniverseSession);
+
+    void onUniverseStateFeed(const spaceopera::universe_state_feed& feed);
+    void onUniverseControlReply(const spaceopera::universe_control_reply& rep);
+
+
 
     
 };

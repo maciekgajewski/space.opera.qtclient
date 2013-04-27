@@ -29,6 +29,7 @@ Rectangle {
         client: client
 
         onSessionError: errortext.errorMsg = errorString
+        onUniverseStateChanged: universeState.text = "time scale: " + currentTimeScale + ", current time: " + currentTime
     }
 
     Column {
@@ -40,15 +41,12 @@ Rectangle {
         // conection status text
         Text {
             id: connectionstatus
-            //anchors.top: parent.top
             text: client.connected ? "connected" : "disconnected"
         }
 
         // error status
         Text {
             id: errortext
-            //anchors.top: connectionstatus.bottom
-
             property string errorMsg
 
             text: client.connected ? "---" : errorMsg
@@ -57,10 +55,30 @@ Rectangle {
         // connect button
 
         TextButton {
-            //anchors.bottom: parent.bottom
             width: 100
             text: "Connect"
             onClicked: { client.connectToHost("localhost", 7898); errortext.errorMsg = "connecting..." }
+        }
+
+        // universe status
+        Text {
+            id: universeState
+            text: "---"
+        }
+
+        // universe control
+
+        TextButton {
+            text: "time: stop"
+            onClicked : universeSession.changeTimeScale(0)
+        }
+        TextButton {
+            text: "time: x1"
+            onClicked : universeSession.changeTimeScale(1)
+        }
+        TextButton {
+            text: "time: x10"
+            onClicked : universeSession.changeTimeScale(10)
         }
     }
 
