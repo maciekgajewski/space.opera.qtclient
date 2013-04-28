@@ -71,8 +71,14 @@ message connect_to_universe_reply {
 
 message universe_state_feed {
 	required double current_time = 1;
-	required double time_scale = 2;
+	optional double time_scale = 2;
+	repeated string removed_objects = 3;
+	repeated object_description added_objects = 4;
 }
+
+	message object_description {
+		required string name = 1;
+	}
 
 message universe_control {
 	optional double new_time_scale = 1;
@@ -82,3 +88,10 @@ message universe_control_reply {
 	required bool ok = 1;
 	optional string message = 2;
 }
+
+
+
+
+
+
+

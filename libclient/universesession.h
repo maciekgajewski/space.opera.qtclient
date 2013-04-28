@@ -21,7 +21,8 @@ public:
     explicit UniverseSession(QObject *parent = 0);
     
 signals:
-    void universeStateChanged(double currentTime, double currentTimeScale);
+    void universeConfigFeed(double timeScale);
+    void universeTimeFeed(double currentTime);
     
 public slots:
     void changeTimeScale(double newTimeScale);

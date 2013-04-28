@@ -9,4 +9,5 @@ target_link_libraries(textclient
 	protocol_cpp
 
 	protobuf
+	pthread
 )

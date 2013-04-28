@@ -26,7 +26,10 @@ void UniverseSession::changeTimeScale(double newTimeScale)
 
 void UniverseSession::onUniverseStateFeed(const spaceopera::universe_state_feed& feed)
 {
-    emit universeStateChanged(feed.current_time(), feed.time_scale());
+    emit universeTimeFeed(feed.current_time());
+    if (feed.has_time_scale()){
+        emit universeConfigFeed(feed.time_scale());
+    }
 }
 
 void UniverseSession::onUniverseControlReply(const spaceopera::universe_control_reply& reply)

@@ -29,7 +29,8 @@ Rectangle {
         client: client
 
         onSessionError: errortext.errorMsg = errorString
-        onUniverseStateChanged: universeState.text = "time scale: " + currentTimeScale + ", current time: " + currentTime
+        onUniverseConfigFeed: timeScaleText.text = "time scale: " + timeScale;
+        onUniverseTimeFeed: timeText.text = "time: " + currentTime
     }
 
     Column {
@@ -62,7 +63,11 @@ Rectangle {
 
         // universe status
         Text {
-            id: universeState
+            id: timeText
+            text: "---"
+        }
+        Text {
+            id: timeScaleText
             text: "---"
         }
 

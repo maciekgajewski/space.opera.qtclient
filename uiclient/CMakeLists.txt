@@ -16,4 +16,5 @@ target_link_libraries(uiclient
 	protocol_cpp
 
 	protobuf
+	pthread
 )
